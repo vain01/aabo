@@ -1,6 +1,8 @@
 package com.ifurion.crawlerspringboot.util;
 
 import com.ifurion.crawlerspringboot.entity.Book;
+import com.ifurion.crawlerspringboot.entity.IP;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,9 +15,12 @@ import java.util.List;
  * @author haoliang on 2018/10/9.
  */
 public class HttpDocumentUtils {
-	public static List<String> getBookCategoryUrls(String htmlContent) throws Exception {
+	public static List<String> getBookCategoryUrls(String htmlContent){
 		//获取的数据，存放在集合中
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
+		if (StringUtils.isBlank(htmlContent)) {
+			return result;
+		}
 		//采用Jsoup解析
 		Document doc = Jsoup.parse(htmlContent);
 		//获取html标签中的内容
@@ -33,9 +38,12 @@ public class HttpDocumentUtils {
 		return result;
 	}
 
-	public static List<Book> getBookList(String htmlContent) throws Exception {
+	public static List<Book> getBookList(String htmlContent){
 		//获取的数据，存放在集合中
-		List<Book> result = new ArrayList<Book>();
+		List<Book> result = new ArrayList<>();
+		if (StringUtils.isBlank(htmlContent)) {
+			return result;
+		}
 		//采用Jsoup解析
 		Document doc = Jsoup.parse(htmlContent);
 		//获取html标签中的内容
@@ -58,5 +66,30 @@ public class HttpDocumentUtils {
 		book.setTitle(element.select("a[class=pic]").attr("title"));
 		book.setComments(element.select("a[dd_name=单品评论]").text());
 		return book;
+	}
+
+	public static List<IP> getIps(String htmlContent) {
+		//获取的数据，存放在集合中
+		List<IP> result = new ArrayList<>();
+		if (StringUtils.isBlank(htmlContent)) {
+			return result;
+		}
+		//采用Jsoup解析
+		Document doc = Jsoup.parse(htmlContent);
+		//获取html标签中的内容
+		Elements elements = doc
+			.select("table[id=ip_list]")
+			.select("tbody")
+			.select("tr");
+
+		for (Element element : elements) {
+			IP ip = new IP();
+			ip.setIp(element.select("td").get(1).text());
+			ip.setPort(element.select("td").get(2).text());
+			result.add(ip);
+		}
+
+		//返回数据
+		return result;
 	}
 }

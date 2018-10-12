@@ -4,6 +4,7 @@ package com.ifurion.crawlerspringboot.constant;
  * @author haoliang on 2018/10/9.
  */
 public interface Constant {
+	String PROXY_URL = "http://www.xicidaili.com/nn/";
 	String HOST = "http://category.dangdang.com";
 	String CATEGORY_URL = HOST + "/cp01.54.08.00.00.00.html";
 	String HYPHEN = "-";

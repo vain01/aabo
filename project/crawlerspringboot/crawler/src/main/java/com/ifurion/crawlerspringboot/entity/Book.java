@@ -9,4 +9,5 @@ import lombok.Data;
 public class Book {
 	private String title;
 	private String comments;
+	private Integer popularity;
 }
