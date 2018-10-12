@@ -6,7 +6,7 @@ package com.ifurion.crawlerspringboot.constant;
 public interface Constant {
 	String PROXY_URL = "http://www.xicidaili.com/nn/";
 	String HOST = "http://category.dangdang.com";
-	String CATEGORY_URL = HOST + "/cp01.54.08.00.00.00.html";
+	String CATEGORY_LEVEL_3_URL = HOST + "/cp01.54.08.00.00.00.html";
 	String HYPHEN = "-";
 	String PATH_SPLIT_CHAR = "/";
 	String PREFIX_PAGE = "pg";

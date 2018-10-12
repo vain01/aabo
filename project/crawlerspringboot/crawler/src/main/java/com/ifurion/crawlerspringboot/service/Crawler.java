@@ -47,8 +47,8 @@ public class Crawler {
 			return null;
 		}
 		List<Book> books = new ArrayList<Book>();
-		// for (int i = 0; i < categoryUrls.size(); i++) {
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < categoryUrls.size(); i++) {
+		// for (int i = 0; i < 1; i++) {
 			log.info("{},爬取URL:{}", i + 1, categoryUrls.get(i));
 			for (int j = 1; j <= 100; j++) {
 				String url = compileUrl(categoryUrls, i, j, POSTFIX_SCORE_DESC);
@@ -108,9 +108,18 @@ public class Crawler {
 	 * @throws Exception
 	 */
 	public List<String> getCategoryUrls() throws Exception {
-		String url = CATEGORY_URL;
+		List<String> result = new ArrayList<>();
+		String url = CATEGORY_LEVEL_3_URL;
 		String htmlContent = HttpClientUtils.getHtmlContent(url);
-		List<String> result = HttpDocumentUtils.getBookCategoryUrls(htmlContent);
+		List<String> categoryLevel3 = HttpDocumentUtils.getBookCategoryLevel3Urls(htmlContent);
+		for (int i = 0; i < categoryLevel3.size(); i++) {
+			String urlLevel4 = HOST + categoryLevel3.get(i);
+			htmlContent = HttpClientUtils.getHtmlContent(urlLevel4);
+			List<String> categoryLevel4 = HttpDocumentUtils.getBookCategoryLevel4Urls(htmlContent);
+			if (CollectionUtils.isNotEmpty(categoryLevel4)) {
+				result.addAll(categoryLevel4);
+			}
+		}
 		return result;
 	}
 
@@ -153,7 +162,7 @@ public class Crawler {
 
 	private List<IP> getIpPool() throws IOException {
 		List<IP> result = new ArrayList<>();
-		for (int i = 1; i < 6; i++) {
+		for (int i = 1; i < 3; i++) {
 			String url = PROXY_URL + i;
 			String htmlContent = HttpClientUtils.getHtmlContent(url);
 			if (StringUtils.isNotBlank(htmlContent)) {

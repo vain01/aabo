@@ -15,30 +15,17 @@ import java.util.List;
  * @author haoliang on 2018/10/9.
  */
 public class HttpDocumentUtils {
-	public static List<String> getBookCategoryUrls(String htmlContent){
-		//获取的数据，存放在集合中
-		List<String> result = new ArrayList<>();
-		if (StringUtils.isBlank(htmlContent)) {
-			return result;
-		}
-		//采用Jsoup解析
-		Document doc = Jsoup.parse(htmlContent);
-		//获取html标签中的内容
-		Elements elements = doc
-			.select("div[class=crumbs_fb_left]")
-			.select("div[class=select_frame]")
-			.select("a[dd_name=面包屑3级]");
-
-		for (Element element : elements) {
-			String href = element.select("a").attr("href");
-			result.add(href);
-		}
-
-		//返回数据
-		return result;
+	public static List<String> getBookCategoryLevel3Urls(String htmlContent) {
+		String ddName = "面包屑3级";
+		return getBookCategoryUrls(htmlContent, ddName);
 	}
 
-	public static List<Book> getBookList(String htmlContent){
+	public static List<String> getBookCategoryLevel4Urls(String htmlContent) {
+		String ddName = "面包屑4级";
+		return getBookCategoryUrls(htmlContent, ddName);
+	}
+
+	public static List<Book> getBookList(String htmlContent) {
 		//获取的数据，存放在集合中
 		List<Book> result = new ArrayList<>();
 		if (StringUtils.isBlank(htmlContent)) {
@@ -87,6 +74,29 @@ public class HttpDocumentUtils {
 			ip.setIp(element.select("td").get(1).text());
 			ip.setPort(element.select("td").get(2).text());
 			result.add(ip);
+		}
+
+		//返回数据
+		return result;
+	}
+
+	public static List<String> getBookCategoryUrls(String htmlContent, String ddName) {
+		//获取的数据，存放在集合中
+		List<String> result = new ArrayList<>();
+		if (StringUtils.isBlank(htmlContent)) {
+			return result;
+		}
+		//采用Jsoup解析
+		Document doc = Jsoup.parse(htmlContent);
+		//获取html标签中的内容
+		Elements elements = doc
+			.select("div[class=crumbs_fb_left]")
+			.select("div[class=select_frame]")
+			.select("a[dd_name=" + ddName + "]");
+
+		for (Element element : elements) {
+			String href = element.select("a").attr("href");
+			result.add(href);
 		}
 
 		//返回数据

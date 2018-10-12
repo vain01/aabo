@@ -16,7 +16,7 @@ public class ThreadPoolConfig {
 	@Bean
 	public ThreadPoolTaskExecutor getT(){
 		ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-		// 		<!-- 核心线程数  -->
+		// <!-- 核心线程数  -->
 		threadPoolTaskExecutor.setCorePoolSize(100);
 		// <!-- 最大线程数 -->
 		threadPoolTaskExecutor.setMaxPoolSize(5000);
@@ -28,15 +28,5 @@ public class ThreadPoolConfig {
 		threadPoolTaskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 		return threadPoolTaskExecutor;
 
-		// <property name="corePoolSize" value="50" />
-		// <!-- 最大线程数 -->
-		// <property name="maxPoolSize" value="5000" />
-		// <!-- 队列最大长度 >=mainExecutor.maxSize -->
-		// <property name="queueCapacity" value="5000" />
-		// <!-- 线程池维护线程所允许的空闲时间 -->
-		// <property name="keepAliveSeconds" value="300" />
-		// <property name="rejectedExecutionHandler">
-		// 	<bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
-		// </property>
 	}
 }
