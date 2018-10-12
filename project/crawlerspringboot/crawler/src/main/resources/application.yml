@@ -1,0 +1,48 @@
+# 指定context-path
+server:
+  servlet:
+    context-path: /crawler
+  tomcat:
+    basedir: /spring-boot
+    accesslog:
+      enabled: true
+    uri-encoding: utf-8
+  port: 8100
+
+# 指定logback.xml
+logging:
+  config: classpath:logback.xml
+
+# mybatis相关配置
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  check-config-location: true
+  type-aliases-package: com.ifurion.crawlerspringboot.entity
+  mapper-locations: classpath:mybatis/mapper/sqlite/*.xml
+
+spring:
+  http:
+    encoding:
+      force: true
+      enabled:
+  # sqlite
+  datasource:
+    # 驱动配置信息
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite::resource:books.db3
+    username:
+    password:
+    # Druid连接池的配置信息
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    removeAbandoned: true
+    removeAbandonedTimeout: 1800
+    logAbandoned: true
