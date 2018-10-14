@@ -16,13 +16,18 @@ import java.util.List;
  */
 public class HttpDocumentUtils {
 	public static List<String> getBookCategoryLevel3Urls(String htmlContent) {
-		String ddName = "面包屑3级";
-		return getBookCategoryUrls(htmlContent, ddName);
+		String selectParent = "div[class=crumbs_fb_left]";
+		String selectSelf = "div[class=select_frame]";
+		String selectChild = "a[dd_name=面包屑3级]";
+		return getBookCategoryUrls(htmlContent, selectParent, selectSelf, selectChild);
 	}
 
 	public static List<String> getBookCategoryLevel4Urls(String htmlContent) {
-		String ddName = "面包屑4级";
-		return getBookCategoryUrls(htmlContent, ddName);
+		String selectParent = "li[dd_name=分类]";
+		String selectSelf = "div[class=clearfix]";
+		String selectChild = "span";
+		List<String> result = getBookCategoryUrls(htmlContent, selectParent, selectSelf, selectChild);
+		return result;
 	}
 
 	public static List<Book> getBookList(String htmlContent) {
@@ -50,8 +55,16 @@ public class HttpDocumentUtils {
 
 	private static Book getBook(Element element) {
 		Book book = new Book();
+		book.setId(element.attr("id"));
 		book.setTitle(element.select("a[class=pic]").attr("title"));
+		book.setUrl(element.select("a[class=pic]").attr("href"));
 		book.setComments(element.select("a[dd_name=单品评论]").text());
+		String priceText = element.select("p[class=price]").select("span[class=search_now_price]").text();
+		try {
+			book.setPrice(Double.valueOf(priceText.substring(priceText.indexOf("¥") + 1)));
+		} catch (Exception e) {
+			book.setPrice(0.0);
+		}
 		return book;
 	}
 
@@ -80,19 +93,20 @@ public class HttpDocumentUtils {
 		return result;
 	}
 
-	public static List<String> getBookCategoryUrls(String htmlContent, String ddName) {
+	public static List<String> getBookCategoryUrls(String htmlContent, String parent, String self, String child) {
 		//获取的数据，存放在集合中
 		List<String> result = new ArrayList<>();
 		if (StringUtils.isBlank(htmlContent)) {
 			return result;
 		}
+
 		//采用Jsoup解析
 		Document doc = Jsoup.parse(htmlContent);
-		//获取html标签中的内容
+
 		Elements elements = doc
-			.select("div[class=crumbs_fb_left]")
-			.select("div[class=select_frame]")
-			.select("a[dd_name=" + ddName + "]");
+			.select(parent)
+			.select(self)
+			.select(child);
 
 		for (Element element : elements) {
 			String href = element.select("a").attr("href");

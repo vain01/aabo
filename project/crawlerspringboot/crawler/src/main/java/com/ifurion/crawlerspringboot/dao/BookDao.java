@@ -21,4 +21,7 @@ public interface BookDao {
 	int selectAllCount();
 
 	List<IP> selectIps();
+
+	List<String> getCategories();
+
 }

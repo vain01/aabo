@@ -29,7 +29,7 @@ spring:
   datasource:
     # 驱动配置信息
     driver-class-name: org.sqlite.JDBC
-    url: jdbc:sqlite::resource:data/identifier.sqlite
+    url: jdbc:sqlite:d:/db/sqlite/identifier.sqlite
     username:
     password:
     # Druid连接池的配置信息

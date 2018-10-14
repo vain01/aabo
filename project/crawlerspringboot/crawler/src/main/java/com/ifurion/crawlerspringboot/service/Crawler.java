@@ -38,20 +38,21 @@ public class Crawler {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Book> getBookList() throws Exception {
+	public List<Book> getBookList(Boolean isRapid) throws Exception {
 		if (HttpClientUtils.ipPool.size() == 0) {
 			HttpClientUtils.ipPool = bookDao.selectIps();
 		}
-		List<String> categoryUrls = getCategoryUrls();
+		List<String> categoryUrls = getCategoryUrls(isRapid);
 		if (CollectionUtils.isEmpty(categoryUrls)) {
 			return null;
 		}
-		List<Book> books = new ArrayList<Book>();
+		List<Book> books = new ArrayList<>();
 		for (int i = 0; i < categoryUrls.size(); i++) {
 		// for (int i = 0; i < 1; i++) {
 			log.info("{},爬取URL:{}", i + 1, categoryUrls.get(i));
 			for (int j = 1; j <= 100; j++) {
 				String url = compileUrl(categoryUrls, i, j, POSTFIX_SCORE_DESC);
+				//并发执行
 				this.threadPool.execute(new Runnable() {
 					@Override
 					public void run() {
@@ -107,18 +108,30 @@ public class Crawler {
 	 * @return ["/cp01.54.08.00.00.00.html","/cp01.54.06.00.00.00.html"]
 	 * @throws Exception
 	 */
-	public List<String> getCategoryUrls() throws Exception {
+	public List<String> getCategoryUrls(Boolean isRapid) throws Exception {
 		List<String> result = new ArrayList<>();
+		if (isRapid != null && isRapid == true) {
+			return bookDao.getCategories();
+		}
 		String url = CATEGORY_LEVEL_3_URL;
 		String htmlContent = HttpClientUtils.getHtmlContent(url);
 		List<String> categoryLevel3 = HttpDocumentUtils.getBookCategoryLevel3Urls(htmlContent);
 		for (int i = 0; i < categoryLevel3.size(); i++) {
-			String urlLevel4 = HOST + categoryLevel3.get(i);
-			htmlContent = HttpClientUtils.getHtmlContent(urlLevel4);
+			url = HOST + categoryLevel3.get(i);
+
+			//取出4级分类
+			htmlContent = HttpClientUtils.getHtmlContent(url);
 			List<String> categoryLevel4 = HttpDocumentUtils.getBookCategoryLevel4Urls(htmlContent);
+
 			if (CollectionUtils.isNotEmpty(categoryLevel4)) {
 				result.addAll(categoryLevel4);
+			} else {
+				//如果当前分类下面没有子分类,直接去父分类url
+				result.add(categoryLevel3.get(i));
 			}
+		}
+		if (result.size() == 0) {
+			result = bookDao.getCategories();
 		}
 		return result;
 	}
@@ -136,13 +149,20 @@ public class Crawler {
 	}
 
 	public int insertOne() {
+		Book book = getExampleBook();
+		return bookDao.insertOne(book);
+	}
+
+	private Book getExampleBook() {
 		Book book = new Book();
+		book.setId("P99900");
 		book.setTitle("计算机网络基础");
+		book.setUrl("http://product.dangdang.com/23219375.html");
 		book.setComments("11条评论");
 		String valueOfComments = book.getComments().replace("条评论", "");
 		book.setPopularity(Integer.valueOf(valueOfComments));
-
-		return bookDao.insertOne(book);
+		book.setPrice(9.0);
+		return book;
 	}
 
 	public List<Book> selectByName(String name) {

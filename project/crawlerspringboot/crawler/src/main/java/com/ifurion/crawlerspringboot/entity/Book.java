@@ -7,7 +7,10 @@ import lombok.Data;
  */
 @Data
 public class Book {
+	private String id;
 	private String title;
+	private String url;
 	private String comments;
 	private Integer popularity;
+	private Double price;
 }

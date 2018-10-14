@@ -3,9 +3,9 @@
 <mapper namespace="com.ifurion.crawlerspringboot.dao.BookDao">
     <insert id="insertOne">
         INSERT INTO book
-        (title,comments,popularity)
+        (id,title,url,comments,popularity,price)
         VALUES
-        (#{title},#{comments},#{popularity});
+        (#{id},#{title},#{url},#{comments},#{popularity},#{price});
     </insert>
     <delete id="deleteAll">
         DELETE FROM book
@@ -16,7 +16,7 @@
         ORDER BY popularity desc
     </select>
     <select id="selectByName" resultType="com.ifurion.crawlerspringboot.entity.Book">
-        <bind name="pattern" value="'%' + _parameter.name + '%'" />
+        <bind name="pattern" value="'%' + _parameter.name + '%'"/>
         SELECT *
         FROM book
         WHERE title like #{pattern};
@@ -28,5 +28,9 @@
     <select id="selectIps" resultType="com.ifurion.crawlerspringboot.entity.IP">
         SELECT ip,port
         FROM ippool
+    </select>
+    <select id="getCategories" resultType="java.lang.String">
+        SELECT url
+        FROM category
     </select>
 </mapper>

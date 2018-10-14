@@ -23,12 +23,13 @@ public class BookController {
 	/**
 	 * 获取每个类目下的计算机书目信息
 	 *
+	 * @param isRapid 使用缓存类目,快速爬取
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "getBookList", method = RequestMethod.GET)
-	public List<Book> getBookList() throws Exception {
-		return crawler.getBookList();
+	@RequestMapping(value = "bookList", method = RequestMethod.GET)
+	public List<Book> getBookList(Boolean isRapid) throws Exception {
+		return crawler.getBookList(isRapid);
 	}
 
 	/**
@@ -37,37 +38,37 @@ public class BookController {
 	 * @return ["/cp01.54.08.00.00.00.html","/cp01.54.06.00.00.00.html"]
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "getCategoryUrls", method = RequestMethod.GET)
-	public List<String> getCategoryUrls() throws Exception {
-		return crawler.getCategoryUrls();
+	@RequestMapping(value = "bookCategoryUrls", method = RequestMethod.GET)
+	public List<String> getCategoryUrls(Boolean isRapid) throws Exception {
+		return crawler.getCategoryUrls(isRapid);
 	}
 
-	@RequestMapping(value = "selectAll")
+	@RequestMapping(value = "allBooks")
 	public List<Book> selectAll() {
 		return crawler.selectAll();
 	}
 
-	@RequestMapping(value = "selectAllCount")
+	@RequestMapping(value = "allBooksCount")
 	public int selectAllCount() {
 		return crawler.selectAllCount();
 	}
 
-	@RequestMapping(value = "selectByName")
+	@RequestMapping(value = "bookQuery")
 	public List<Book> selectByName(String name) {
 		return crawler.selectByName(name);
 	}
 
-	@RequestMapping(value = "insertOne")
+	@RequestMapping(value = "bookInsertion")
 	public int insertOne() {
 		return crawler.insertOne();
 	}
 
-	@RequestMapping(value = "deleteAll")
+	@RequestMapping(value = "empltyDb")
 	public int deleteAll() {
 		return crawler.deleteAll();
 	}
 
-	@RequestMapping(value = "init")
+	@RequestMapping(value = "initializer")
 	public String init() throws IOException {
 		return crawler.init();
 	}
