@@ -40,7 +40,7 @@ public class Crawler {
 	 */
 	public List<Book> getBookList(Boolean isRapid) throws Exception {
 		if (HttpClientUtils.ipPool.size() == 0) {
-			HttpClientUtils.ipPool = bookDao.selectIps();
+			HttpClientUtils.ipPool = bookDao.selectAllProxyIps();
 		}
 		List<String> categoryUrls = getCategoryUrls(isRapid);
 		if (CollectionUtils.isEmpty(categoryUrls)) {
@@ -74,7 +74,7 @@ public class Crawler {
 		}
 		List<Book> bookList = HttpDocumentUtils.getBookList(htmlContent);
 		if (!CollectionUtils.isEmpty(bookList)) {
-			bookDao.insertBatch(bookList);
+			bookDao.insertBookBatch(bookList);
 			books.addAll(bookList);
 		}
 	}
@@ -95,8 +95,16 @@ public class Crawler {
 	public List<String> getCategoryUrls(Boolean isRapid) throws Exception {
 		List<String> result = new ArrayList<>();
 		if (isRapid != null && isRapid == true) {
-			return bookDao.getCategories();
+			return bookDao.getAllCategories();
 		}
+		resolveCategoryUrls(result);
+		if (result.size() == 0) {
+			result = bookDao.getAllCategories();
+		}
+		return result;
+	}
+
+	private void resolveCategoryUrls(List<String> result) throws IOException {
 		String url = CATEGORY_LEVEL_3_URL;
 		String htmlContent = HttpClientUtils.getHtmlContent(url);
 		List<String> categoryLevel3 = HttpDocumentUtils.getBookCategoryLevel3Urls(htmlContent);
@@ -110,31 +118,27 @@ public class Crawler {
 			if (CollectionUtils.isNotEmpty(categoryLevel4)) {
 				result.addAll(categoryLevel4);
 			} else {
-				//如果当前分类下面没有子分类,直接去父分类url
+				//如果当前分类下面没有子分类,直接取父分类url
 				result.add(categoryLevel3.get(i));
 			}
 		}
-		if (result.size() == 0) {
-			result = bookDao.getCategories();
-		}
-		return result;
 	}
 
-	public List<Book> selectAll() {
-		return bookDao.selectAll();
+	public List<Book> selectAllBooks() {
+		return bookDao.selectAllBooks();
 	}
 
-	public int selectAllCount() {
-		return bookDao.selectAllCount();
+	public int selectAllBooksCount() {
+		return bookDao.selectAllBookCount();
 	}
 
-	public int deleteAll() {
-		return bookDao.deleteAll();
+	public int deleteAllBooks() {
+		return bookDao.deleteAllBooks();
 	}
 
-	public int insertOne() {
+	public int insertBook() {
 		Book book = getExampleBook();
-		return bookDao.insertOne(book);
+		return bookDao.insertBook(book);
 	}
 
 	private Book getExampleBook() {
@@ -149,18 +153,26 @@ public class Crawler {
 		return book;
 	}
 
-	public List<Book> selectByName(String name) {
-		return bookDao.selectByName(name);
+	public List<Book> selectBookByName(String name) {
+		return bookDao.selectBookByName(name);
 	}
 
 	public String init() throws IOException {
+		List<String> categoryUrls = new ArrayList<>();
+		resolveCategoryUrls(categoryUrls);
+		if (categoryUrls.size() >= 100) {
+			bookDao.deleteAllCategories();
+			bookDao.insertCategoryBatch(categoryUrls);
+		}
+		List<String> categories = bookDao.getAllCategories();
+		String result = "categories:" + categories.size();
 		HttpClientUtils.ipPool.addAll(getIpPool());
-		String result = "ips:" + String.valueOf(HttpClientUtils.ipPool.size());
-		result += "\norigin:" + selectAllCount();
-		insertOne();
-		result += "\ninserted:" + selectAllCount();
-		deleteAll();
-		result += "\ndeletedall:" + selectAllCount();
+		result += "\nips:" + String.valueOf(HttpClientUtils.ipPool.size());
+		result += "\norigin:" + selectAllBooksCount();
+		insertBook();
+		result += "\ninserted:" + selectAllBooksCount();
+		deleteAllBooks();
+		result += "\ndeletedall:" + selectAllBooksCount();
 		return result;
 	}
 
@@ -177,10 +189,8 @@ public class Crawler {
 			}
 		}
 		if (HttpClientUtils.ipPool.size() == 0) {
-			result = bookDao.selectIps();
+			result = bookDao.selectAllProxyIps();
 		}
 		return result;
 	}
-
-
 }

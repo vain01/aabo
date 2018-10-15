@@ -29,43 +29,49 @@ public class BookController {
 	 */
 	@RequestMapping(value = "bookList", method = RequestMethod.GET)
 	public List<Book> getBookList(Boolean isRapid) throws Exception {
+		if (isRapid == null) {
+			isRapid = true;
+		}
 		return crawler.getBookList(isRapid);
 	}
 
 	/**
-	 * 获取计算机网络项目下的所有分类url
+	 * 获取计算机网络项目下的所有分类(到第四级)url
 	 *
 	 * @return ["/cp01.54.08.00.00.00.html","/cp01.54.06.00.00.00.html"]
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "bookCategoryUrls", method = RequestMethod.GET)
 	public List<String> getCategoryUrls(Boolean isRapid) throws Exception {
+		if (isRapid == null) {
+			isRapid = true;
+		}
 		return crawler.getCategoryUrls(isRapid);
 	}
 
 	@RequestMapping(value = "allBooks")
-	public List<Book> selectAll() {
-		return crawler.selectAll();
+	public List<Book> selectAllBooks() {
+		return crawler.selectAllBooks();
 	}
 
 	@RequestMapping(value = "allBooksCount")
-	public int selectAllCount() {
-		return crawler.selectAllCount();
+	public int selectAllBooksCount() {
+		return crawler.selectAllBooksCount();
 	}
 
 	@RequestMapping(value = "bookQuery")
-	public List<Book> selectByName(String name) {
-		return crawler.selectByName(name);
+	public List<Book> selectBookByName(String name) {
+		return crawler.selectBookByName(name);
 	}
 
 	@RequestMapping(value = "bookInsertion")
-	public int insertOne() {
-		return crawler.insertOne();
+	public int insertBook() {
+		return crawler.insertBook();
 	}
 
-	@RequestMapping(value = "empltyDb")
-	public int deleteAll() {
-		return crawler.deleteAll();
+	@RequestMapping(value = "emptyBookDb")
+	public int deleteAllBooks() {
+		return crawler.deleteAllBooks();
 	}
 
 	@RequestMapping(value = "initializer")

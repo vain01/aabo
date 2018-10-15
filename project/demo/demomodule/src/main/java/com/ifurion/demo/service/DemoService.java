@@ -12,12 +12,8 @@ import java.util.List;
  */
 @Component
 public class DemoService {
-	private final DemoMapper dao;
-
 	@Autowired
-	public DemoService(DemoMapper dao) {
-		this.dao = dao;
-	}
+	private DemoMapper dao;
 
 	public boolean insert(DemoModel model) {
 		return dao.insert(model) > 0;

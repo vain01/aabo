@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ifurion.crawlerspringboot.dao.BookDao">
-    <insert id="insertOne">
+    <insert id="insertBook">
         INSERT INTO book
         (id,title,url,comments,popularity,price)
         VALUES
         (#{id},#{title},#{url},#{comments},#{popularity},#{price})
     </insert>
-    <insert id="insertBatch">
+    <insert id="insertBookBatch">
         INSERT INTO book
         (id,title,url,comments,popularity,price)
         VALUES
@@ -15,29 +15,40 @@
             (#{item.id},#{item.title},#{item.url},#{item.comments},#{item.popularity},#{item.price})
         </foreach>
     </insert>
-    <delete id="deleteAll">
+    <insert id="insertCategoryBatch">
+        INSERT INTO category
+        (url)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item})
+        </foreach>
+    </insert>
+    <delete id="deleteAllBooks">
         DELETE FROM book
     </delete>
-    <select id="selectAll" resultType="com.ifurion.crawlerspringboot.entity.Book">
+    <delete id="deleteAllCategories">
+        DELETE FROM category
+    </delete>
+    <select id="selectAllBooks" resultType="com.ifurion.crawlerspringboot.entity.Book">
         SELECT *
         FROM book
         ORDER BY popularity desc
     </select>
-    <select id="selectByName" resultType="com.ifurion.crawlerspringboot.entity.Book">
+    <select id="selectBookByName" resultType="com.ifurion.crawlerspringboot.entity.Book">
         <bind name="pattern" value="'%' + _parameter.name + '%'"/>
         SELECT *
         FROM book
         WHERE title like #{pattern};
     </select>
-    <select id="selectAllCount" resultType="java.lang.Integer">
+    <select id="selectAllBookCount" resultType="java.lang.Integer">
         SELECT COUNT(*)
         FROM book
     </select>
-    <select id="selectIps" resultType="com.ifurion.crawlerspringboot.entity.IP">
+    <select id="selectAllProxyIps" resultType="com.ifurion.crawlerspringboot.entity.IP">
         SELECT ip,port
         FROM ippool
     </select>
-    <select id="getCategories" resultType="java.lang.String">
+    <select id="getAllCategories" resultType="java.lang.String">
         SELECT url
         FROM category
     </select>

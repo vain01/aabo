@@ -10,20 +10,23 @@ import java.util.List;
  * @author haoliang on 2018/10/10.
  */
 public interface BookDao {
-	int insertOne(Book book);
+	int insertBook(Book book);
 
+	List<Book> selectAllBooks();
 
-	List<Book> selectAll();
+	int deleteAllBooks();
 
-	int deleteAll();
+	List<Book> selectBookByName(@Param("name") String name);
 
-	List<Book> selectByName(@Param("name") String name);
+	int selectAllBookCount();
 
-	int selectAllCount();
+	List<IP> selectAllProxyIps();
 
-	List<IP> selectIps();
+	List<String> getAllCategories();
 
-	List<String> getCategories();
+	void insertBookBatch(List<Book> bookList);
 
-	void insertBatch(List<Book> bookList);
+	void insertCategoryBatch(List<String> categoryUrls);
+
+	void deleteAllCategories();
 }

@@ -15,12 +15,8 @@ import java.util.List;
  */
 @Controller
 public class DemoController {
-	private final DemoService service;
-
 	@Autowired
-	public DemoController(DemoService service) {
-		this.service = service;
-	}
+	private DemoService service;
 
 	/**
 	 * JSP 测试
@@ -28,7 +24,8 @@ public class DemoController {
 	 */
 	@GetMapping("test")
 	public ModelAndView test() {
-		ModelAndView mv = new ModelAndView("demo"); // 对应 demo.jsp 路径
+		// 对应 demo.jsp 路径
+		ModelAndView mv = new ModelAndView("demo");
 		mv.addObject("value", "测试值");
 		return mv;
 	}

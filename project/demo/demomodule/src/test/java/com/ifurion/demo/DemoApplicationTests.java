@@ -43,14 +43,14 @@ public class DemoApplicationTests {
 		all = service.selectAll();
 		Assert.assertEquals(size + 2, all.size());
 
-		// // updateValue
-		// selectModel.setValue("测试更改value1");
-		// result = service.updateValue(selectModel);
-		// Assert.assertTrue(result);
-		//
-		// // delete
-		// result = service.delete(selectModel.getId());
-		// Assert.assertTrue(result);
+		// updateValue
+		selectModel.setValue("测试更改value1");
+		result = service.updateValue(selectModel);
+		Assert.assertTrue(result);
+
+		// delete
+		result = service.delete(selectModel.getId());
+		Assert.assertTrue(result);
 	}
 
 }
