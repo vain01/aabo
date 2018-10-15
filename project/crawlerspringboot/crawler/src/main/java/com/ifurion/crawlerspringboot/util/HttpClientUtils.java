@@ -37,7 +37,7 @@ public class HttpClientUtils {
 			String ip = ipPool.get(num).getIp();
 			String port = ipPool.get(num).getPort();
 			HttpHost proxy = new HttpHost(ip, Integer.parseInt(port));
-			RequestConfig config = RequestConfig.custom().setProxy(proxy).setConnectTimeout(3000).setSocketTimeout(3000).build();
+			RequestConfig config = RequestConfig.custom().setProxy(proxy).setConnectTimeout(5000).setSocketTimeout(5000).build();
 			getMethod.setConfig(config);
 
 			HttpResponse response;

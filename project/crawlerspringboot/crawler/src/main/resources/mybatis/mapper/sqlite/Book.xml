@@ -5,7 +5,15 @@
         INSERT INTO book
         (id,title,url,comments,popularity,price)
         VALUES
-        (#{id},#{title},#{url},#{comments},#{popularity},#{price});
+        (#{id},#{title},#{url},#{comments},#{popularity},#{price})
+    </insert>
+    <insert id="insertBatch">
+        INSERT INTO book
+        (id,title,url,comments,popularity,price)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.title},#{item.url},#{item.comments},#{item.popularity},#{item.price})
+        </foreach>
     </insert>
     <delete id="deleteAll">
         DELETE FROM book

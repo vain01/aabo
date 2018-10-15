@@ -12,6 +12,7 @@ import java.util.List;
 public interface BookDao {
 	int insertOne(Book book);
 
+
 	List<Book> selectAll();
 
 	int deleteAll();
@@ -24,4 +25,5 @@ public interface BookDao {
 
 	List<String> getCategories();
 
+	void insertBatch(List<Book> bookList);
 }

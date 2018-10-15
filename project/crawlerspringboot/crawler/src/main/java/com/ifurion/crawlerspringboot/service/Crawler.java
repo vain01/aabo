@@ -48,22 +48,20 @@ public class Crawler {
 		}
 		List<Book> books = new ArrayList<>();
 		for (int i = 0; i < categoryUrls.size(); i++) {
-		// for (int i = 0; i < 1; i++) {
-			log.info("{},爬取URL:{}", i + 1, categoryUrls.get(i));
-			for (int j = 1; j <= 100; j++) {
-				String url = compileUrl(categoryUrls, i, j, POSTFIX_SCORE_DESC);
-				//并发执行
-				this.threadPool.execute(new Runnable() {
-					@Override
-					public void run() {
-						try {
+			String categoryUrl = categoryUrls.get(i);
+			//并发执行
+			this.threadPool.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						for (int j = 1; j <= 100; j++) {
+							String url = compileUrl(categoryUrl, j, POSTFIX_SCORE_DESC);
 							fetchBooksInfo(books, url);
-						} catch (Exception e) {
 						}
+					} catch (Exception e) {
 					}
-				});
-			}
-			log.info("当前爬到的书籍条目:{}", books.size());
+				}
+			});
 		}
 
 		return books;
@@ -76,27 +74,13 @@ public class Crawler {
 		}
 		List<Book> bookList = HttpDocumentUtils.getBookList(htmlContent);
 		if (!CollectionUtils.isEmpty(bookList)) {
-			saveBookToDb(bookList);
+			bookDao.insertBatch(bookList);
 			books.addAll(bookList);
 		}
 	}
 
-	private void saveBookToDb(List<Book> bookList) {
-		if (CollectionUtils.isEmpty(bookList)) {
-			return;
-		}
-		for (int i = 0; i < bookList.size(); i++) {
-			try {
-				bookList.get(i).setPopularity(
-					Integer.valueOf(bookList.get(i).getComments().replace("条评论", "")));
-			} catch (NumberFormatException e) {
-			}
-			bookDao.insertOne(bookList.get(i));
-		}
-	}
-
-	private String compileUrl(List<String> categoryUrls, int i, int pageNo, String postfix) {
-		String path = categoryUrls.get(i)
+	private String compileUrl(String categoryUrl, int pageNo, String postfix) {
+		String path = categoryUrl
 			.replace(PATH_SPLIT_CHAR, PATH_SPLIT_CHAR + PREFIX_PAGE + pageNo + HYPHEN)
 			.replace(POSTFIX_HTML_FILE_EXTENTION, postfix);
 		return HOST + path;
@@ -119,7 +103,7 @@ public class Crawler {
 		for (int i = 0; i < categoryLevel3.size(); i++) {
 			url = HOST + categoryLevel3.get(i);
 
-			//取出4级分类
+			//取出第4级分类
 			htmlContent = HttpClientUtils.getHtmlContent(url);
 			List<String> categoryLevel4 = HttpDocumentUtils.getBookCategoryLevel4Urls(htmlContent);
 

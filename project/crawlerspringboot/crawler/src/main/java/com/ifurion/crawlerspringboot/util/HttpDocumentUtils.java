@@ -59,6 +59,12 @@ public class HttpDocumentUtils {
 		book.setTitle(element.select("a[class=pic]").attr("title"));
 		book.setUrl(element.select("a[class=pic]").attr("href"));
 		book.setComments(element.select("a[dd_name=单品评论]").text());
+		try {
+			book.setPopularity(
+				Integer.valueOf(book.getComments().replace("条评论", "")));
+		} catch (NumberFormatException e) {
+			book.setPopularity(0);
+		}
 		String priceText = element.select("p[class=price]").select("span[class=search_now_price]").text();
 		try {
 			book.setPrice(Double.valueOf(priceText.substring(priceText.indexOf("¥") + 1)));
