@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aabo.consumer.dao.BookDao">
+    <insert id="insertBook">
+        INSERT INTO book
+        (id,title,url,comments,popularity,price)
+        VALUES
+        (#{id},#{title},#{url},#{comments},#{popularity},#{price})
+    </insert>
+    <insert id="insertBookBatch">
+        INSERT INTO book
+        (id,title,url,comments,popularity,price)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.title},#{item.url},#{item.comments},#{item.popularity},#{item.price})
+        </foreach>
+    </insert>
+    <insert id="insertCategoryBatch">
+        INSERT INTO category
+        (url)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item})
+        </foreach>
+    </insert>
+    <delete id="deleteAllBooks">
+        DELETE FROM book
+    </delete>
+    <delete id="deleteAllCategories">
+        DELETE FROM category
+    </delete>
+    <select id="selectAllBooks" resultType="com.aabo.consumer.entity.Book">
+        SELECT *
+        FROM book
+        ORDER BY popularity desc
+    </select>
+    <select id="selectBookByName" resultType="com.aabo.consumer.entity.Book">
+        <bind name="pattern" value="'%' + _parameter.name + '%'"/>
+        SELECT *
+        FROM book
+        WHERE title like #{pattern};
+    </select>
+    <select id="selectAllBookCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM book
+    </select>
+    <select id="selectAllProxyIps" resultType="com.aabo.consumer.entity.IP">
+        SELECT ip,port
+        FROM ippool
+    </select>
+    <select id="getAllCategories" resultType="java.lang.String">
+        SELECT url
+        FROM category
+    </select>
+</mapper>

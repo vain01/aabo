@@ -1,0 +1,36 @@
+# 指定context-path
+server:
+  servlet:
+    context-path: /crawler
+  tomcat:
+    basedir: /spring-boot
+    accesslog:
+      enabled: true
+    uri-encoding: utf-8
+  port: 8100
+
+# mybatis相关配置
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  check-config-location: true
+  type-aliases-package: com.ifurion.crawlerspringboot.entity
+  mapper-locations: classpath:mybatis/mapper/sqlite/*.xml
+
+# spring相关配置
+spring:
+  http:
+    encoding:
+      force: true
+      enabled:
+  # sqlite
+  datasource:
+    # 驱动配置信息
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:d:/db/sqlite/identifier.sqlite
+    username:
+    password:
+  rabbitmq:
+    host: localhost
+    port: 5672
+
+
